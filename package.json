@@ -1,8 +1,13 @@
 {
+<<<<<<< HEAD
 	"devDependencies": {
 		"jasmine-node": ""
 	},
 	"dependencies": {
 		"mysql": "~2.0.x"
+=======
+	"dependencies": {
+		"request": ""
+>>>>>>> upload
 	}
 }
