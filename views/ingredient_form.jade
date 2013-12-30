@@ -1,0 +1,34 @@
+extends layout
+
+block content
+	h1 Lägg till ingredient
+
+	div.col-md-12
+		form(action="/ingredient/add", method="post", role="form")
+			fieldset
+				div.form-group
+					label(for="name") Namn på ingredient
+					input.form-control(type="text", placeholder="Ingredientnamn", name="name")
+
+				div.form-group
+					label(for="weight") Vikt (i gram)
+					input.form-control(type="text", placeholder="Vikt", name="weight")
+
+				div.form-group
+					label(for="calories") Kalorier (kcal)
+					input.form-control(type="text", placeholder="Kalorier", name="calories")
+
+				div.form-group
+					label(for="protein") Protein (i gram)
+					input.form-control(type="text", placeholder="Protein", name="protein")
+
+				div.form-group
+					label(for="carbohydrates") Kolhydrater (i gram)
+					input.form-control(type="text", placeholder="Kolhydrate", name="carbohydrates")
+
+				div.form-group
+					label(for="fat") Fett (i gram)
+					input.form-control(type="text", placeholder="Fett", name="fat")
+
+			button.btn(type="submit") Lägg till
+			button.btn(type="reset") Nollställ formulär

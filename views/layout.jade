@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
 	head
-		title= Mealz - title
+		title='Mealz - '+ title
 		link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
 	body
@@ -17,15 +17,25 @@ html(lang="en")
 				div.collapse.navbar-collapse
 					ul.nav.navbar-nav
 						li
-							a(href="/") Home
+							a(href="/") Hem
 						li
-							a(href="/ingredients") Ingredients
-					form.navbar-form.navbar-right(action="/login", method="post", role="form")
-						div.form-group
-							input.form-control(type="text", placeholder="Username", name="username")
-						div.form-group
-							input.form-control(type="password", placeholder="Password", name="password")
-						button.btn(type="submit") Sign in
+							a(href="/ingredients") Ingredienser
+
+					if cookies.user_username
+						div.navbar-right.user_menu
+							a(href="/ingredient/form") Lägg till ingrediens
+							a(href="/meal/form")  Lägg till måltid
+					else
+						form.navbar-form.navbar-right(action="/login", method="post", role="form")
+							div.form-group
+								input.form-control(type="text", placeholder="Username", name="username")
+							div.form-group
+								input.form-control(type="password", placeholder="Password", name="password")
+							button.btn(type="submit") Sign in
+
+					if cookies.user_admin == 1
+						div.navbar-right.admin_menu Admin!
+
 		div.container
 			block content
 		script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js')

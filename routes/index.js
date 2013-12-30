@@ -4,5 +4,6 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Home' });
+	console.log(req.cookies.user_username);
+	res.render('index', { cookies: req.cookies, title: 'Hem' });
 };

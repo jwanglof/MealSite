@@ -35,6 +35,12 @@ app.get('/', routes.index);
 app.get("/ingredients", user.ingredients);
 app.post("/login", user.login);
 
+app.get("/ingredient/form", user.ingredient_form);
+app.get("/ingredient/add", user.ingredient_add);
+
+app.get("/meal/form", user.meal_form);
+app.get("/meal/add", user.meal_add);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

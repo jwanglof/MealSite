@@ -13,3 +13,25 @@ a {
 	padding-top: 20px;
 	border-bottom: 1px solid #000;
 }
+
+.ingredient {
+	border-bottom: 1px solid #000;
+	margin-bottom: 10px;
+}
+
+.user_menu {
+	color: #fff;
+	margin-top: 17px;
+}
+
+.admin_menu {
+	color: #fff;
+	margin-top: 17px;
+	padding-right: 20px;
+}
+
+.test {border: 1px solid #000;}
+
+.form-group {
+	
+}

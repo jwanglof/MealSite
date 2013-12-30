@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	h1 Lägg till måltid
+
+	div.col-md-12
+		form(action="/meal/add", method="post", role="form")
+			fieldset
+				div.form-group
+					label(for="name") Namn på måltid
+					input.form-control(type="text", placeholder="Måltid", name="name")
+
+				div.form-group
+					label(for="weight") Beskrivning (max 100 tecken)
+					textarea.form-control(rows=3)
+
+			button.btn(type="submit") Lägg till
+			button.btn(type="reset") Nollställ formulär
