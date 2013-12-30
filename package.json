@@ -1,0 +1,15 @@
+{
+  "name": 				"MealSite",
+  "description": 		"A site that will make it easier to track what you eat",
+  "version": 			"0.0.1",
+  "private": 			true,
+  "scripts": {
+    "start": 				"node app.js"
+  },
+  "dependencies": {
+    "express": 				"3.4.*",
+    "jade": 				"*",
+    "mysql": 				"2.0.*",
+    "encryptionhelper": 	"*"
+  }
+}

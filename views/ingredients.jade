@@ -1,0 +1,27 @@
+extends layout
+
+block content
+	h1= title
+
+	div.row.ingredient_title
+		div.col-md-3 Name
+		div.col-md-2 Weight
+		div.col-md-2 Calories
+		div.col-md-2 Protein
+		div.col-md-2 Carbohydrate
+		div.col-md-1 Fat
+
+	each ingredient in ingredients
+		div.row
+			div.col-md-3
+				= ingredient["name"]
+			div.col-md-2
+				= ingredient["weight"]
+			div.col-md-2
+				= ingredient["calories"]
+			div.col-md-2
+				= ingredient["protein"]
+			div.col-md-2
+				= ingredient["carbohydrates"]
+			div.col-md-1
+				= ingredient["fat"]
