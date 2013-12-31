@@ -30,5 +30,12 @@ block content
 					label(for="fat") Fett (i gram)
 					input.form-control(type="text", placeholder="Fett", name="fat")
 
+				div.form-group
+					label(for="type") Typ av ingrediens
+					select.form-control(name="type")
+						each type in types
+							option(value=type["id"])
+								= type["name"]
+
 			button.btn(type="submit") Lägg till
 			button.btn(type="reset") Nollställ formulär

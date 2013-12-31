@@ -31,15 +31,18 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+// app.get('/', routes.index);
+app.get("/", user.meals);
 app.get("/ingredients", user.ingredients);
 app.post("/login", user.login);
+app.get("/logout", user.logout);
 
 app.get("/ingredient/form", user.ingredient_form);
-app.get("/ingredient/add", user.ingredient_add);
+app.post("/ingredient/add", user.ingredient_add);
+app.post("/ingredient/getAll", user.ingredient_getAll);
 
 app.get("/meal/form", user.meal_form);
-app.get("/meal/add", user.meal_add);
+app.post("/meal/add", user.meal_add);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	h1 Måltider
+
+	div.row.ingredient_title
+		div.col-md-5 Namn
+		div.col-md-7 Beskrivning
+
+	each meal in meals
+		div.row.ingredient
+			div.col-md-5
+				span.expand_meal(id=meal["id"]) + 
+				= meal["name"]
+			div.col-md-7
+				= meal["description"]

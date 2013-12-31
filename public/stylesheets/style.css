@@ -32,6 +32,14 @@ a {
 
 .test {border: 1px solid #000;}
 
-.form-group {
-	
+#add_ingredient {
+	margin-bottom: 20px;
+	font-size: 20px;
 }
+
+#add_ingredient:hover {
+	/*border-bottom: 1px solid #000;*/
+	cursor: pointer;
+}
+
+button {margin-right: 10px;}

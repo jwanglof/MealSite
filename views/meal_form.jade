@@ -12,7 +12,11 @@ block content
 
 				div.form-group
 					label(for="weight") Beskrivning (max 100 tecken)
-					textarea.form-control(rows=3)
+					textarea.form-control(rows=3, name="description")
+
+				div.form-group
+					div#add_ingredient + Lägg till ingrediens
+					div#ingredients
 
 			button.btn(type="submit") Lägg till
 			button.btn(type="reset") Nollställ formulär
