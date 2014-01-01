@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	h1
+		= meal["name"]
+
+	div.row.ingredient_title
+		div.col-md-5 Namn
+		div.col-md-7 Beskrivning
+
+	div.row.ingredient
+		div.col-md-5
+			= meal["name"]
+		div.col-md-5
+			= meal["description"]

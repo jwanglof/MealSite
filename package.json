@@ -10,6 +10,8 @@
 		"express": 						"3.4.*",
 		"jade": 							"*",
 		"mysql": 							"2.0.*",
-		"encryptionhelper": 	"*"
+		"encryptionhelper": 	"*",
+		"csv": 					"*",
+		"mysql-queues": 		"*"
 	}
 }

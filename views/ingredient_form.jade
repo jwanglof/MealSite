@@ -2,6 +2,8 @@ extends layout
 
 block content
 	h1 Lägg till ingredient
+	h4 Sök livsmedel på följande sida: 
+		a(href="http://www7.slv.se/Naringssok/", target="_blank") http://www7.slv.se/Naringssok/
 
 	div.col-md-12
 		form(action="/ingredient/add", method="post", role="form")

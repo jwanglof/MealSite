@@ -12,5 +12,7 @@ block content
 			div.col-md-5
 				span.expand_meal(id=meal["id"]) + 
 				= meal["name"]
-			div.col-md-7
+			div.col-md-5
 				= meal["description"]
+			div.col-md-2
+				a(href="/meal/show/"+ meal["id"] +"") Gå till

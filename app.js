@@ -4,10 +4,12 @@
  */
 
 var express 		= require('express');
-var routes 			= require('./routes');
-var user 			= require('./routes/user');
 var http 			= require('http');
 var path 			= require('path');
+
+var routes 			= require('./routes');
+var user 			= require('./routes/user');
+var admin			= require("./routes/admin");
 
 var app 			= express();
 
@@ -43,6 +45,9 @@ app.post("/ingredient/getAll", user.ingredient_getAll);
 
 app.get("/meal/form", user.meal_form);
 app.post("/meal/add", user.meal_add);
+app.get("/meal/show/:id", user.meal_show);
+
+app.get("/admin/csv", admin.csv);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

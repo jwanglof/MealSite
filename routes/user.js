@@ -11,6 +11,9 @@ var connection 			= mysql.createConnection({
 	password: 	"testtest",
 	database: 	"mealz"
 });
+var queues = require('mysql-queues');
+const DEBUG = true;
+queues(connection, DEBUG);
 
 exports.meals = function(req, res) {
 	connection.query("SELECT * FROM meal", function(err, rows) {
@@ -18,7 +21,7 @@ exports.meals = function(req, res) {
 
 		res.render('meals', { cookies: req.cookies, title: 'Måltider', meals: rows });
 	});
-}
+};
 
 exports.ingredients = function(req, res) {
 	connection.query("SELECT * FROM ingredient", function(err, rows) {
@@ -35,15 +38,11 @@ exports.login = function(req, res) {
 		if (err) { console.log(err); }
 
 		if (row && row[0]["password"] == encryptedPassword) {
-			// req.session.admin = row[0]["admin"];
-			// req.session.user = row[0]["username"];
 			var hour = 60 * 60 * 1000;
 			res.cookie("user_username", row[0]["username"], { maxAge: hour });
 			res.cookie("user_admin", row[0]["admin"], { maxAge: hour });
 			res.cookie("user_id", row[0]["id"], { maxAge: hour });
 
-			// console.log(req.session);
-			// res.send("Correct password");
 			res.redirect("/");
 		} else {
 			res.redirect("/");
@@ -95,78 +94,51 @@ exports.meal_form = function(req, res) {
 exports.meal_add = function(req, res) {
 	var postInputs = {name: req.body.name, description: req.body.description, fk_meal_user: req.cookies.user_id};
 	var success = true;
-	var lastId;
-	var mealIngredients = new Array();
 
-	connection.beginTransaction(function(err) {
+	var trans = connection.startTransaction();
+
+	trans.query("INSERT INTO meal SET ?", postInputs, function(err, info) {
 		if (err) {
-			console.log(err);
 			success = false;
-			throw err;
+			trans.rollback();
 		}
-
-		connection.query("INSERT INTO meal SET ?", postInputs, function(err, result) {
-			if (err) {
-				connection.rollback(function() {
-					console.log(err);
-					success = false;
-					throw err;
-				});
-			}
-
-			for(var i = 0; i < req.body.ingredients.length; i++) {
-				// var mealIngredientInputs = {fk_mi_meal: result.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]}
-				var mealIngredientInputs = [result.insertId, req.body.ingredients[i], req.body.weight[i]];
-
-				mealIngredients[i] = mealIngredientInputs;
-			}
-
-			console.log(mealIngredients);
-
-			connection.query("INSERT INTO meal_ingredient (fk_mi_meal, fk_mi_ingredient, weight) VALUES ?", [mealIngredients], function(err, result) {
-				if (err) {
-					connection.rollback(function() {
-						success = false;
-						throw err;
+		else {
+			if (req.body.ingredients.length != undefined) {
+				for(var i = 0; i < req.body.ingredients.length; i++) {
+					var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
+					trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
+						if (err) {
+							success = false;
+							trans.rollback();
+						}
 					});
 				}
-
-				console.log("Success!");
-			});
-		});
+			}
+			trans.commit();
+		}
 	});
 
-	// connection.query("INSERT INTO meal SET ?", postInputs, function(err, result) {
-	// 	if (err) throw err;
-		
-	// 	lastId = result.insertId;
-	// });
-	// console.log(0);
-	// var sql = "INSERT INTO meal_ingredient (fk_mi_meal, fk_mi_ingredient, weight) VALUES ?";
-	// for(var i = 0; i < req.body.ingredients.length; i++) {
-	// 	// var mealIngredientInputs = {fk_mi_meal: result.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]}
-	// 	var mealIngredientInputs = [lastId, req.body.ingredients[i], req.body.weight[i]];
-
-	// 	mealIngredients[i] = mealIngredientInputs;
-
-	// 	// connection.query("INSERT INTO meal_ingredient SET ?", mealIngredientInputs, function(err, meal_result) {
-	// 	// 	if (err)
-	// 	// 		success = false;
-
-	// 	// 	console.log(meal_result.insertId);
-	// 	// });
-	// }
-	// console.log(mealIngredients);
-	// connection.query(sql, [mealIngredients], function(err) {
-	// 	if (err) throw err;
-	// 	console.log("woho");
-	// });
-	// console.log(1);
+	trans.execute();
 
 	if (success)
 		res.redirect("/");
 };
 
+exports.meal_show = function(req, res) {
+	var mealId = req.params["id"];
+
+	var ingredients = {};
+
+	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
+		if (err) { console.log(err); }
+		else {
+			connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
+
+				// res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: row[0] });
+			})
+		}
+	});
+};
 
 // connection.end(function(err) {
 // 	console.log("An error occured when the DB connection tried to terminate.");

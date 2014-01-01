@@ -35,7 +35,8 @@ html(lang="en")
 							button.btn(type="submit") Sign in
 
 					if cookies.user_admin == 1
-						div.navbar-right.admin_menu Admin!
+						div.navbar-right.admin_menu
+							a(href="/admin/csv") CSV fil
 
 		div.container
 			block content
