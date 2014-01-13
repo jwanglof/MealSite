@@ -131,61 +131,58 @@ exports.meal_show = function(req, res) {
 
 	var meal;
 	var ingredients = [];
+	var ingredientsTotal = [0, 0, 0, 0, 0];
 	var fkIngredients = [];
-	var numberOfIngredients = 0;
-	var ingredientWeight = 0;
 	var counterIngredients = 0;
 
-	// ingredients[0][0] = meal weight
-	// ingredients[0][1] = ingredient info
-
 	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
-		if (err) { console.log(err); return; }
-		else {
-			meal = row[0];
-			query2();
-		};
+		if (err) { console.log(err); return; };
+		
+		meal = row[0];
+		query2();
 	});
 
 	var query2 = function() {
 		connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
-			if (err) { console.log(err); return; }
-			else {
-				fkIngredients = rows;
-				query3();	
-			};
+			if (err) { console.log(err); return; };
+			
+			fkIngredients = rows;
+			query3();
 		});
 	};
 
 	var query3 = function() {
 		for (var i = 0; i < fkIngredients.length; i++) {
 			connection.query("SELECT * FROM ingredient WHERE id=?", fkIngredients[i].ingredientId, function(err, ing) {
-				if (err) { console.log(err); return; }
-				else {
-					var weight_in_meal = fkIngredients[counterIngredients].weight;
-					var ingredient_weight = ing[0].weight;
+				if (err) { console.log(err); return; };
+				
+				var weight_in_meal = fkIngredients[counterIngredients].weight;
+				var ingredient_weight = ing[0].weight;
 
-					var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
-					var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
-					var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
-					var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
+				var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
+				var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
+				var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
+				var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
 
-					ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
-					counterIngredients += 1;
+				ingredientsTotal[0] += weight_in_meal;
+				ingredientsTotal[1] += calories;
+				ingredientsTotal[2] += protein;
+				ingredientsTotal[3] += fat;
+				ingredientsTotal[4] += carbohydrates;
 
-					// If done, call finished
-					if (ingredients.length == fkIngredients.length) {
-						finished();
-					};
+				ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
+				counterIngredients += 1;
+
+				// If done, call finished
+				if (ingredients.length == fkIngredients.length) {
+					finished();
 				};
 			});
 		};
 	};
 
-	// console.log(meal);
 	var finished = function() {
-		console.log(ingredients);
-		res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients });
+		res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
 	};
 };
 
