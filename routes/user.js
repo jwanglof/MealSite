@@ -127,17 +127,30 @@ exports.meal_add = function(req, res) {
 exports.meal_show = function(req, res) {
 	var mealId = req.params["id"];
 
-	var ingredients = {};
+	var meal;
+	var ingredients = [];
 
 	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
+		meal = row;
 		if (err) { console.log(err); }
 		else {
 			connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
-
-				// res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: row[0] });
-			})
+				for(var i = 0; i < rows.length; i++) {
+					connection.query("SELECT * FROM ingredient WHERE id=?", rows[i].ingredientId, function(err, ing) {
+						if (err) { console.log(err); }
+						else {
+							var ingID = ing[0].id;
+							ingredients.push(ing);
+							// console.log(ing);
+							console.log("----- "+ ingredients);
+						}
+					});
+				}
+			});
 		}
 	});
+	console.log(meal);
+	res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients });
 };
 
 // connection.end(function(err) {
