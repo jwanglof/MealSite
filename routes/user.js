@@ -7,8 +7,10 @@ var encryptionHelper	= require("encryptionhelper");
 var mysql 				= require("mysql");
 var connection 			= mysql.createConnection({
 	host: 		"localhost",
-	user: 		"jwanglof",
-	password: 	"testtest",
+	// user: 		"jwanglof",
+	// password: 	"testtest",
+	user: 		"root",
+	password: 	"geanbe33",
 	database: 	"mealz"
 });
 var queues = require('mysql-queues');
@@ -129,28 +131,62 @@ exports.meal_show = function(req, res) {
 
 	var meal;
 	var ingredients = [];
+	var fkIngredients = [];
+	var numberOfIngredients = 0;
+	var ingredientWeight = 0;
+	var counterIngredients = 0;
+
+	// ingredients[0][0] = meal weight
+	// ingredients[0][1] = ingredient info
 
 	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
-		meal = row;
-		if (err) { console.log(err); }
+		if (err) { console.log(err); return; }
 		else {
-			connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
-				for(var i = 0; i < rows.length; i++) {
-					connection.query("SELECT * FROM ingredient WHERE id=?", rows[i].ingredientId, function(err, ing) {
-						if (err) { console.log(err); }
-						else {
-							var ingID = ing[0].id;
-							ingredients.push(ing);
-							// console.log(ing);
-							console.log("----- "+ ingredients);
-						}
-					});
-				}
-			});
-		}
+			meal = row[0];
+			query2();
+		};
 	});
-	console.log(meal);
-	res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients });
+
+	var query2 = function() {
+		connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
+			if (err) { console.log(err); return; }
+			else {
+				fkIngredients = rows;
+				query3();	
+			};
+		});
+	};
+
+	var query3 = function() {
+		for (var i = 0; i < fkIngredients.length; i++) {
+			connection.query("SELECT * FROM ingredient WHERE id=?", fkIngredients[i].ingredientId, function(err, ing) {
+				if (err) { console.log(err); return; }
+				else {
+					var weight_in_meal = fkIngredients[counterIngredients].weight;
+					var ingredient_weight = ing[0].weight;
+
+					var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
+					var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
+					var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
+					var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
+
+					ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
+					counterIngredients += 1;
+
+					// If done, call finished
+					if (ingredients.length == fkIngredients.length) {
+						finished();
+					};
+				};
+			});
+		};
+	};
+
+	// console.log(meal);
+	var finished = function() {
+		console.log(ingredients);
+		res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients });
+	};
 };
 
 // connection.end(function(err) {

@@ -2,17 +2,27 @@ extends layout
 
 block content
 	h1
-		= meal["name"]
+		= meal.name
 
 	div.row.ingredient_title
-		div.col-md-5 Namn
-		div.col-md-7 Beskrivning
+		div.col-md-2 Ingrediensnamn
+		div.col-md-2 Vikt (g)
+		div.col-md-2 Kalorier (kcal)
+		div.col-md-2 Protein (g)
+		div.col-md-2 Fett (g)
+		div.col-md-2 Kolhydrater (g)
 
 	div.row.ingredient
-		div.col-md-5
-			= meal["name"]
-		div.col-md-5
-			= meal["description"]
-
-	each ingredient in ingredients
-		= ingredient["id"]
+		each ingredient in ingredients
+			div.col-md-2
+				= ingredient[0]
+			div.col-md-2
+				= ingredient[1]
+			div.col-md-2
+				= ingredient[2]
+			div.col-md-2
+				= ingredient[3]
+			div.col-md-2
+				= ingredient[4]
+			div.col-md-2
+				= ingredient[5]
