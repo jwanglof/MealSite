@@ -43,3 +43,7 @@ a {
 }
 
 button {margin-right: 10px;}
+
+.expand_meal {
+	cursor: pointer;;
+}

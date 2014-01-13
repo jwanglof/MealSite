@@ -8,11 +8,12 @@ block content
 		div.col-md-7 Beskrivning
 
 	each meal in meals
-		div.row.ingredient
+		div.row.ingredient(id=meal["id"])
 			div.col-md-5
-				span.expand_meal(id=meal["id"]) + 
-				= meal["name"]
+				span.expand_meal + 
+					= meal["name"]
 			div.col-md-5
 				= meal["description"]
 			div.col-md-2
 				a(href="/meal/show/"+ meal["id"] +"") Gå till
+			div.meal_ingredients

@@ -17,6 +17,7 @@ var app 			= express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.configure('development', function () { app.locals.pretty = true; });
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -46,6 +47,7 @@ app.post("/ingredient/getAll", user.ingredient_getAll);
 app.get("/meal/form", user.meal_form);
 app.post("/meal/add", user.meal_add);
 app.get("/meal/show/:id", user.meal_show);
+app.post("/meal/get/:id", user.meal_get);
 
 app.get("/admin/csv", admin.csv);
 

@@ -186,6 +186,67 @@ exports.meal_show = function(req, res) {
 	};
 };
 
+exports.meal_get = function(req, res) {
+	var mealId = req.body.id;
+
+	var meal;
+	var ingredients = [];
+	var ingredientsTotal = [0, 0, 0, 0, 0];
+	var fkIngredients = [];
+	var counterIngredients = 0;
+
+	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
+		if (err) { console.log(err); return; };
+		
+		meal = row[0];
+		query2();
+	});
+
+	var query2 = function() {
+		connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
+			if (err) { console.log(err); return; };
+			
+			fkIngredients = rows;
+			query3();
+		});
+	};
+
+	var query3 = function() {
+		for (var i = 0; i < fkIngredients.length; i++) {
+			connection.query("SELECT * FROM ingredient WHERE id=?", fkIngredients[i].ingredientId, function(err, ing) {
+				if (err) { console.log(err); return; };
+				
+				var weight_in_meal = fkIngredients[counterIngredients].weight;
+				var ingredient_weight = ing[0].weight;
+
+				var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
+				var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
+				var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
+				var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
+
+				ingredientsTotal[0] += weight_in_meal;
+				ingredientsTotal[1] += calories;
+				ingredientsTotal[2] += protein;
+				ingredientsTotal[3] += fat;
+				ingredientsTotal[4] += carbohydrates;
+
+				ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
+				counterIngredients += 1;
+
+				// If done, call finished
+				if (ingredients.length == fkIngredients.length) {
+					finished();
+				};
+			});
+		};
+	};
+
+	var finished = function() {
+		// res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
+		res.send({ meal: meal, ingredients: ingredients, totals: ingredientsTotal });
+	};
+};
+
 // connection.end(function(err) {
 // 	console.log("An error occured when the DB connection tried to terminate.");
 // 	console.log("Error: "+ err);
