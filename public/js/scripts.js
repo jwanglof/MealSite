@@ -45,73 +45,72 @@ $(document).ready(function() {
 	});
 
 	$(".expand_meal").on("click", function() {
+		var weight = $("#weight").val();
 		var id = $(".ingredient").attr("id");
+		showMeal(id, weight);
+	});
 
+	$("#weight").on("keyup", function() {
+		var weight = $("#weight").val();
+		var id = $(".ingredient").attr("id");
+		showMeal(id, weight);
+	});
+
+	function showMeal(id, weight) {
 		request = $.ajax({
 			type: "post",
 			// url: "/ajax/mail",
 			url: "/meal/get/"+ id,
-			data: {id: id}
+			data: {id: id, weight: weight}
 		});
 
-		request.done(function(response, textStatus, jqXHR) {
-			
+		request.done(function(response, textStatus, jqXHR) {	
 			var content = "";
 
-			content += "<div class='col-md-12'>Vikt: <input type='number' name='weight'></select></div>";
+			content += "<div style='font-size: 10px; padding-top: 40px; padding-bottom: 20px'>";
 
-			content += "<div style='font-size: 10px; padding-top: 40px'>"
+				content += "<div style='font-weight: 700;'>";
+					content += "<div class='col-md-2'> </div>";
+					content += "<div class='col-md-2'>Vikt (g)</div>";
+					content += "<div class='col-md-2'>Kalorier (kcal)</div>";
+					content += "<div class='col-md-2'>Protein (g)</div>";
+					content += "<div class='col-md-2'>Fett (g)</div>";
+					content += "<div class='col-md-2'>Kolhydrater (g)</div>";
+				content += "</div>";
 
-			content += "<div style='font-weight: 700;'>";
-				content += "<div class='col-md-2'>Ingrediensnamn</div>";
-				content += "<div class='col-md-2'>Vikt (g)</div>";
-				content += "<div class='col-md-2'>Kalorier (kcal)</div>";
-				content += "<div class='col-md-2'>Protein (g)</div>";
-				content += "<div class='col-md-2'>Fett (g)</div>";
-				content += "<div class='col-md-2'>Kolhydrater (g)</div>";
+				content += "<div class='col-md-2' style='font-weight: 700'>Din angivna vikt:</div>";
+				content += "<div class='col-md-2'>"+ weight +"</div>";
+				content += "<div class='col-md-2'>"+ response["user"][1] +"</div>";
+				content += "<div class='col-md-2'>"+ response["user"][2] +"</div>";
+				content += "<div class='col-md-2'>"+ response["user"][3] +"</div>";
+				content += "<div class='col-md-2'>"+ response["user"][4] +"</div>";
+
+				content += "<div class='col-md-12' style='margin-top: 10px; padding-top: 10px; font-weight: 700; border-top: 1px solid #000;'>Innehållsförteckning</div>";
+
+				for (var i = 0; i < response["ingredients"].length; i++) {
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][0] +"</div>";
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][1] +"</div>";
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][2] +"</div>";
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][3] +"</div>";
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][4] +"</div>";
+					content += "<div class='col-md-2'>"+ response["ingredients"][i][5] +"</div>";
+				}
+				content += "<div style='font-weight: 700;'>";
+					content += "<div class='col-md-2'>Totalt i måltid:</div>";
+					content += "<div class='col-md-2'>"+ response["totals"][0] +"</div>";
+					content += "<div class='col-md-2'>"+ response["totals"][1] +"</div>";
+					content += "<div class='col-md-2'>"+ response["totals"][2] +"</div>";
+					content += "<div class='col-md-2'>"+ response["totals"][3] +"</div>";
+					content += "<div class='col-md-2'>"+ response["totals"][4] +"</div>";
+				content += "</div>";
+
 			content += "</div>";
-
-			for (var i = 0; i < response["ingredients"].length; i++) {
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][0] +"</div>";
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][1] +"</div>";
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][2] +"</div>";
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][3] +"</div>";
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][4] +"</div>";
-				content += "<div class='col-md-2'>"+ response["ingredients"][i][5] +"</div>";
-			}
-			content += "<div style='font-weight: 700;'>";
-				content += "<div class='col-md-2'>Totalt</div>";
-				content += "<div class='col-md-2'>"+ response["totals"][0] +"</div>";
-				content += "<div class='col-md-2'>"+ response["totals"][1] +"</div>";
-				content += "<div class='col-md-2'>"+ response["totals"][2] +"</div>";
-				content += "<div class='col-md-2'>"+ response["totals"][3] +"</div>";
-				content += "<div class='col-md-2'>"+ response["totals"][4] +"</div>";
-			content += "</div>";
-
-			content += "</div>";
-			/*
-		div.col-md-2 Totalt
-		div.col-md-2
-			= totals[0]
-		div.col-md-2
-			= totals[1]
-		div.col-md-2
-			= totals[2]
-		div.col-md-2
-			= totals[3]
-		div.col-md-2
-			= totals[4]
-		div.col-md-2
-			= totals[5]
-			*/
-
+			console.log(id);
 			$("#"+ id).find(".meal_ingredients").html(content);
-
-			// $("#requestCityModal").find(".modal-body").html("Tack för ditt mail. Vi på StudentTrade.se kollar på det så snabbt vi bara kan!");
 		});
 
 		request.fail(function(jqXHR, textStatus, errorThrown) {
 			console.log(errorThrown);
 		});
-	})
+	};
 });

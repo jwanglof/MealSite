@@ -4,16 +4,19 @@ block content
 	h1 Måltider
 
 	div.row.ingredient_title
-		div.col-md-5 Namn
-		div.col-md-7 Beskrivning
+		div.col-md-4 Namn
+		div.col-md-5 Beskrivning
+		div.col-md-3 Vikt (g)
 
 	each meal in meals
 		div.row.ingredient(id=meal["id"])
-			div.col-md-5
-				span.expand_meal + 
-					= meal["name"]
+			div.col-md-4
+				= meal["name"]
 			div.col-md-5
 				= meal["description"]
 			div.col-md-2
-				a(href="/meal/show/"+ meal["id"] +"") Gå till
+				input(type='number', id='weight', value="0", class="form-control")
+			div.col-md-1
+				//a(href="/meal/show/"+ meal["id"] +"") Gå till
+				span.expand_meal Visa
 			div.meal_ingredients

@@ -128,7 +128,7 @@ exports.meal_add = function(req, res) {
 
 exports.meal_show = function(req, res) {
 	var mealId = req.params["id"];
-
+	
 	var meal;
 	var ingredients = [];
 	var ingredientsTotal = [0, 0, 0, 0, 0];
@@ -159,22 +159,23 @@ exports.meal_show = function(req, res) {
 				var weight_in_meal = fkIngredients[counterIngredients].weight;
 				var ingredient_weight = ing[0].weight;
 
-				var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
-				var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
-				var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
-				var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
+				var calories 			= ing[0].calories / ingredient_weight;
+				var protein 			= ing[0].protein / ingredient_weight;
+				var fat 				= ing[0].fat / ingredient_weight;
+				var carbohydrates 	= ing[0].carbohydrates / ingredient_weight;
 
 				ingredientsTotal[0] += weight_in_meal;
-				ingredientsTotal[1] += calories;
-				ingredientsTotal[2] += protein;
-				ingredientsTotal[3] += fat;
-				ingredientsTotal[4] += carbohydrates;
+				ingredientsTotal[1] += Math.round(calories * weight_in_meal);
+				ingredientsTotal[2] += Math.round(protein * weight_in_meal);
+				ingredientsTotal[3] += Math.round(fat * weight_in_meal);
+				ingredientsTotal[4] += Math.round(carbohydrates * weight_in_meal);
 
 				ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
 				counterIngredients += 1;
 
 				// If done, call finished
 				if (ingredients.length == fkIngredients.length) {
+					console.log(ingredients);
 					finished();
 				};
 			});
@@ -188,28 +189,20 @@ exports.meal_show = function(req, res) {
 
 exports.meal_get = function(req, res) {
 	var mealId = req.body.id;
+	var weight = parseInt(req.body.weight);
 
-	var meal;
 	var ingredients = [];
 	var ingredientsTotal = [0, 0, 0, 0, 0];
+	var ingredientsUser = [0, 0, 0, 0, 0];
 	var fkIngredients = [];
 	var counterIngredients = 0;
 
-	connection.query("SELECT * FROM meal WHERE id=? LIMIT 1", mealId, function(err, row) {
+	connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
 		if (err) { console.log(err); return; };
 		
-		meal = row[0];
-		query2();
+		fkIngredients = rows;
+		query3();
 	});
-
-	var query2 = function() {
-		connection.query("SELECT fk_mi_ingredient as ingredientId, weight FROM meal_ingredient WHERE fk_mi_meal=?", mealId, function(err, rows) {
-			if (err) { console.log(err); return; };
-			
-			fkIngredients = rows;
-			query3();
-		});
-	};
 
 	var query3 = function() {
 		for (var i = 0; i < fkIngredients.length; i++) {
@@ -219,22 +212,46 @@ exports.meal_get = function(req, res) {
 				var weight_in_meal = fkIngredients[counterIngredients].weight;
 				var ingredient_weight = ing[0].weight;
 
-				var calories 			= Math.round(ing[0].calories / ingredient_weight * weight_in_meal);
-				var protein 			= Math.round(ing[0].protein / ingredient_weight * weight_in_meal);
-				var fat 				= Math.round(ing[0].fat / ingredient_weight * weight_in_meal);
-				var carbohydrates 	= Math.round(ing[0].carbohydrates / ingredient_weight * weight_in_meal);
+				var calories 					= ing[0].calories / ingredient_weight;
+				var protein 					= ing[0].protein / ingredient_weight;
+				var fat 						= ing[0].fat / ingredient_weight;
+				var carbohydrates 			= ing[0].carbohydrates / ingredient_weight;
 
+				var caloriesInMeal 			= Math.round(calories * weight_in_meal);
+				var proteinInMeal 			= Math.round(protein * weight_in_meal);
+				var fatInMeal 				= Math.round(fat * weight_in_meal);
+				var carbohydratesInMeal 	= Math.round(carbohydrates * weight_in_meal);
+
+				// Add the weight to show the total weight of each ingredient
 				ingredientsTotal[0] += weight_in_meal;
-				ingredientsTotal[1] += calories;
-				ingredientsTotal[2] += protein;
-				ingredientsTotal[3] += fat;
-				ingredientsTotal[4] += carbohydrates;
+				ingredientsTotal[1] += caloriesInMeal;
+				ingredientsTotal[2] += proteinInMeal;
+				ingredientsTotal[3] += fatInMeal;
+				ingredientsTotal[4] += carbohydratesInMeal;
 
-				ingredients.push([ing[0].name, weight_in_meal, calories, protein, fat, carbohydrates]);
+				ingredients.push([ing[0].name, weight_in_meal, caloriesInMeal, proteinInMeal, fatInMeal, carbohydratesInMeal]);
 				counterIngredients += 1;
 
 				// If done, call finished
 				if (ingredients.length == fkIngredients.length) {
+					/*
+						för att få ut 230 gram av 1340 så måste du ta
+						1340/230 = 5.826....
+
+						och sen om du har 400 gram protte i 1340 så blir det 
+						400/5.826.. = 68.56....
+					*/
+					var weightRatio = ingredientsTotal[0] / weight;
+
+					// $dbWeight = $rad['weight']/$weight;
+					// round($rad['kcal']/$dbWeight, 1)
+
+					ingredientsUser[0] = weight;
+					ingredientsUser[1] = Math.round(ingredientsTotal[1] / weightRatio);
+					ingredientsUser[2] = Math.round(ingredientsTotal[2]  / weightRatio);
+					ingredientsUser[3] = Math.round(ingredientsTotal[3] / weightRatio);
+					ingredientsUser[4] = Math.round(ingredientsTotal[4] / weightRatio);
+
 					finished();
 				};
 			});
@@ -243,7 +260,7 @@ exports.meal_get = function(req, res) {
 
 	var finished = function() {
 		// res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
-		res.send({ meal: meal, ingredients: ingredients, totals: ingredientsTotal });
+		res.send({ ingredients: ingredients, totals: ingredientsTotal, user: ingredientsUser });
 	};
 };
 
