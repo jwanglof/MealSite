@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	h1 Lägg till användare
+
+	div.col-md-12
+		form(action="/admin/user/finish", method="post", role="form")
+			fieldset
+				div.form-group
+					label(for="name") För- och efternamn
+					input.form-control(type="text", placeholder="För- och efternamn", name="name")
+
+				div.form-group
+					label(for="weight") Användarnamn
+					input.form-control(type="text", placeholder="Användarnamn", name="username")
+
+				div.form-group
+					label(for="weight") Lösenord
+					input.form-control(type="text", placeholder="Lösenord", name="password")
+
+				div.form-group
+					label(for="weight") Admin
+					input(type="radio", name="admin", value="0", checked="checked")
+					|Nej
+					input(type="radio", name="admin", value="1")
+					|Ja
+
+			button.btn(type="submit") Lägg till
+			button.btn(type="reset") Nollställ formulär

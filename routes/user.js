@@ -18,11 +18,37 @@ const DEBUG = true;
 queues(connection, DEBUG);
 
 exports.meals = function(req, res) {
-	connection.query("SELECT * FROM meal", function(err, rows) {
-		if (err) { console.log(err); }
+	var meals;
+	var users;
 
-		res.render('meals', { cookies: req.cookies, title: 'Måltider', meals: rows });
+	connection.query("SELECT id,name FROM user", function(err, rows) {
+		if (err) { console.log(err); return; }
+		
+		users = rows;
+
+		query2();
 	});
+
+	var query2 = function() {
+		connection.query("SELECT * FROM meal", function(err, rows) {
+			if (err) { console.log(err); return }
+
+			// Add the user's info to rows instead of only his id
+			for(var i = 0; i < rows.length; i++) {
+				for(var o = 0; o < users.length; o++) {
+					if (rows[i].fk_meal_user == users[o].id)
+						rows[i].fk_meal_user = users[o];
+				}
+			}
+
+			meals = rows;
+			finished();
+		});
+	}
+
+	var finished = function() {
+		res.render('meals', { cookies: req.cookies, title: 'Måltider', meals: meals });
+	}
 };
 
 exports.ingredients = function(req, res) {
@@ -255,6 +281,53 @@ exports.meal_get = function(req, res) {
 		// res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
 		res.send({ ingredients: ingredients, totals: ingredientsTotal, user: ingredientsUser });
 	};
+};
+
+exports.user_info = function(req, res) {
+	connection.query("SELECT * FROM user WHERE id=?", req.cookies.user_id, function(err, row) {
+		res.render("user_info", { cookies: req.cookies, title: 'Användaruppgifter', info: row[0], message: req.session.messages });
+		req.session.messages = "";
+	});
+};
+
+exports.user_info_edit = function(req, res) {
+	var trans = connection.startTransaction();
+
+	if (req.body.password != "") {
+		if (req.body.password == req.body.password_rep) {
+			var encryptedPassword = encryptionHelper.hash(req.body.password, "sha1");
+
+			var postInputs = [req.body.name, encryptedPassword, req.cookies.user_id];
+
+			trans.query("UPDATE user SET name=?, password=? WHERE id=?", postInputs, function(err, info) {
+				if (err) {
+					trans.rollback();
+				}
+				else {
+					req.session.messages = "Användaruppgifter och lösenord uppdaterade."
+					trans.commit();
+				}
+			});
+		} else {
+			req.session.messages = "Lösenorden måste stämma överens!";
+		}
+	} else {
+		var postInputs = [req.body.name, req.cookies.user_id];
+
+		trans.query("UPDATE user SET name=? WHERE id=?", postInputs, function(err, info) {
+			if (err) {
+				trans.rollback();
+			}
+			else {
+				req.session.messages = "Användaruppgifter uppdaterade."
+				trans.commit();
+			}
+		});
+	}
+
+	trans.execute();
+
+	res.redirect("/user/info");
 };
 
 // connection.end(function(err) {

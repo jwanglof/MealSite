@@ -4,16 +4,20 @@ block content
 	h1 Måltider
 
 	div.row.ingredient_title
-		div.col-md-4 Namn
-		div.col-md-5 Beskrivning
+		div.col-md-3 Namn
+		div.col-md-3 Beskrivning
+		div.col-md-3 Tillagd av
 		div.col-md-3 Vikt (g)
 
 	each meal in meals
 		div.row.ingredient(id=meal["id"], style="background-color: rgb("+ meal["r"] +", "+ meal["g"] +", "+ meal["b"] +")")
-			div.col-md-4
+			div.col-md-3
 				= meal["name"]
-			div.col-md-5
+			div.col-md-3
 				= meal["description"]
+			div.col-md-3
+				a(href="/user/show/"+ meal["fk_meal_user"].id +"")
+					= meal["fk_meal_user"].name
 			div.col-md-2
 				input(type='number', class='weight', value="0", class="form-control")
 			div.col-md-1

@@ -32,6 +32,8 @@ html(lang="en")
 									li
 										a(href="/meal/form") Lägg till måltid
 									li
+										a(href="/user/info") Användaruppgifter
+									li
 										a(href="/logout")  Logga ut
 					else
 						form.navbar-form.navbar-right(action="/login", method="post", role="form")
@@ -48,7 +50,7 @@ html(lang="en")
 									span.caret
 								ul.dropdown-menu(role="menu")
 									li
-										a(href="/admin/add/user") Lägg till användare
+										a(href="/admin/user/add") Lägg till användare
 
 		div.container
 			block content

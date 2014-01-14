@@ -1,0 +1,25 @@
+extends layout
+
+block content
+	h1 Användaruppgifter
+
+	if message
+		h2
+			= message
+
+	form(action="/user/info/edit", method="post", role="form")
+			fieldset
+				div.form-group
+					label(for="name") För- och efternamn
+					input.form-control(type="text", value=info.name, name="name")
+
+				div.form-group
+					label(for="weight") Användarnamn
+					input.form-control(type="text", value=info.username, name="username", disabled)
+
+				div.form-group
+					label(for="weight") Byt lösenord
+					input.form-control(type="text", placeholder="Lösenord", name="password")
+					input.form-control(type="text", placeholder="Repetera lösenord", name="password_rep")
+
+			button.btn(type="submit") Ändra information
