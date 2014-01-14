@@ -23,9 +23,16 @@ html(lang="en")
 
 					if cookies.user_username
 						div.navbar-right.user_menu
-							a(href="/ingredient/form") Lägg till ingrediens
-							a(href="/meal/form")  Lägg till måltid
-							a(href="/logout")  Logga ut
+							div.btn-group
+								button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown") Meny 
+									span.caret
+								ul.dropdown-menu(role="menu")
+									li
+										a(href="/ingredient/form") Lägg till ingrediens
+									li
+										a(href="/meal/form") Lägg till måltid
+									li
+										a(href="/logout")  Logga ut
 					else
 						form.navbar-form.navbar-right(action="/login", method="post", role="form")
 							div.form-group
@@ -36,7 +43,12 @@ html(lang="en")
 
 					if cookies.user_admin == 1
 						div.navbar-right.admin_menu
-							a(href="/admin/csv") CSV fil
+							div.btn-group
+								button.btn.btn-danger.dropdown-toggle(type="button", data-toggle="dropdown") Adminmeny 
+									span.caret
+								ul.dropdown-menu(role="menu")
+									li
+										a(href="/admin/add/user") Lägg till användare
 
 		div.container
 			block content

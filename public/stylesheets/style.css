@@ -22,12 +22,12 @@ a {
 
 .user_menu {
 	color: #fff;
-	margin-top: 17px;
+	margin-top: 8px;
 }
 
 .admin_menu {
 	color: #fff;
-	margin-top: 17px;
+	margin-top: 8px;
 	padding-right: 20px;
 }
 
@@ -50,4 +50,7 @@ button {margin-right: 10px;}
 	color: #04A4E3;
 }
 
-.meal_ingredients { line-height: 20px;}
+.meal_ingredients {
+	line-height: 20px;
+	display: none;
+}

@@ -94,7 +94,11 @@ exports.meal_form = function(req, res) {
 };
 
 exports.meal_add = function(req, res) {
-	var postInputs = {name: req.body.name, description: req.body.description, fk_meal_user: req.cookies.user_id};
+	var r = Math.floor((Math.random()*255)+1);
+	var g = Math.floor((Math.random()*255)+1);
+	var b = Math.floor((Math.random()*255)+1);
+
+	var postInputs = {name: req.body.name, description: req.body.description, fk_meal_user: req.cookies.user_id, r: r, g: g, b: b};
 	var success = true;
 
 	var trans = connection.startTransaction();
@@ -234,24 +238,13 @@ exports.meal_get = function(req, res) {
 
 				// If done, call finished
 				if (ingredients.length == fkIngredients.length) {
-					/*
-						för att få ut 230 gram av 1340 så måste du ta
-						1340/230 = 5.826....
-
-						och sen om du har 400 gram protte i 1340 så blir det 
-						400/5.826.. = 68.56....
-					*/
 					var weightRatio = ingredientsTotal[0] / weight;
-
-					// $dbWeight = $rad['weight']/$weight;
-					// round($rad['kcal']/$dbWeight, 1)
-
+					console.log(weight);
 					ingredientsUser[0] = weight;
 					ingredientsUser[1] = Math.round(ingredientsTotal[1] / weightRatio);
 					ingredientsUser[2] = Math.round(ingredientsTotal[2]  / weightRatio);
 					ingredientsUser[3] = Math.round(ingredientsTotal[3] / weightRatio);
 					ingredientsUser[4] = Math.round(ingredientsTotal[4] / weightRatio);
-
 					finished();
 				};
 			});

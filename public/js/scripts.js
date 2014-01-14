@@ -45,14 +45,32 @@ $(document).ready(function() {
 	});
 
 	$(".expand_meal").on("click", function() {
-		var weight = $("#weight").val();
-		var id = $(".ingredient").attr("id");
+		var id = $(this).parent().parent()[0].id;
+		var weight = $(this).parent().parent().find(".weight").val();
+		
+		var meal_ingredients = $(this).parent().parent().find(".meal_ingredients");
+		if (meal_ingredients.css("display") == "none") {
+			$(this).text("Göm");
+			meal_ingredients.css("display", "inline");
+		}
+		else {
+			$(this).text("Visa");
+			meal_ingredients.css("display", "none");
+		}
+
 		showMeal(id, weight);
 	});
 
-	$("#weight").on("keyup", function() {
-		var weight = $("#weight").val();
-		var id = $(".ingredient").attr("id");
+	$(".weight").on("keyup", function() {
+		var id = $(this).closest(".ingredient")[0].id;
+		var weight = $(this).val();
+
+		var meal_ingredients = $(this).parent().parent().find(".meal_ingredients");
+		if (meal_ingredients.css("display") == "none") {
+			$(this).parent().parent().find(".expand_meal").text("Göm");
+			meal_ingredients.css("display", "inline");
+		}
+
 		showMeal(id, weight);
 	});
 
@@ -105,7 +123,6 @@ $(document).ready(function() {
 				content += "</div>";
 
 			content += "</div>";
-			console.log(id);
 			$("#"+ id).find(".meal_ingredients").html(content);
 		});
 

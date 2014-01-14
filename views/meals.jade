@@ -9,13 +9,13 @@ block content
 		div.col-md-3 Vikt (g)
 
 	each meal in meals
-		div.row.ingredient(id=meal["id"])
+		div.row.ingredient(id=meal["id"], style="background-color: rgb("+ meal["r"] +", "+ meal["g"] +", "+ meal["b"] +")")
 			div.col-md-4
 				= meal["name"]
 			div.col-md-5
 				= meal["description"]
 			div.col-md-2
-				input(type='number', id='weight', value="0", class="form-control")
+				input(type='number', class='weight', value="0", class="form-control")
 			div.col-md-1
 				//a(href="/meal/show/"+ meal["id"] +"") Gå till
 				span.expand_meal Visa
