@@ -86,7 +86,7 @@ exports.ingredient_form = function(req, res) {
 };
 
 exports.ingredient_add = function(req, res) {
-	var postInputs = {name: req.body.name, weight: req.body.weight, calories: req.body.calories, 
+	var postInputs = {name: req.body.name, producer: req.body.producer, weight: req.body.weight, calories: req.body.calories, 
 						protein: req.body.protein, carbohydrates: req.body.carbohydrates, fat: req.body.fat,
 						fk_ingredient_ingredientType: req.body.type};
 

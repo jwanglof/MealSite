@@ -4,22 +4,25 @@ block content
 	h1 Ingredienser
 
 	div.row.ingredient_title
-		div.col-md-3 Namn
+		div.col-md-2 Namn
+		div.col-md-2 Tillverkare
 		div.col-md-2 Vikt
 		div.col-md-2 Kalorier
-		div.col-md-2 Protein
+		div.col-md-1 Protein
 		div.col-md-2 Kolhydrater
 		div.col-md-1 Fett
 
 	each ingredient in ingredients
 		div.row.ingredient
-			div.col-md-3
+			div.col-md-2
 				= ingredient["name"]
+			div.col-md-2
+				= ingredient["producer"]
 			div.col-md-2
 				= ingredient["weight"] +"g"
 			div.col-md-2
 				= ingredient["calories"] +"kcal"
-			div.col-md-2
+			div.col-md-1
 				= ingredient["protein"] +"g"
 			div.col-md-2
 				= ingredient["carbohydrates"] +"g"
