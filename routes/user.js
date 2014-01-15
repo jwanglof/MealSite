@@ -3,16 +3,9 @@
  * GET users listing.
  */
 var encryptionHelper	= require("encryptionhelper");
-
+var dbConfig 			= require('../config/db_config');
 var mysql 				= require("mysql");
-var connection 			= mysql.createConnection({
-	host: 		"localhost",
-	// user: 		"jwanglof",
-	// password: 	"testtest",
-	user: 		"root",
-	password: 	"geanbe33",
-	database: 	"mealz"
-});
+var connection 			= mysql.createConnection(dbConfig.dbConfig());
 var queues = require('mysql-queues');
 const DEBUG = true;
 queues(connection, DEBUG);
