@@ -122,31 +122,27 @@ exports.meal_add = function(req, res) {
 
 	var trans = connection.startTransaction();
 
-	try {
-		trans.query("INSERT INTO meal SET ?", postInputs, function(err, info) {
-			if (err) {
-				console.log(err);
-				success = false;
-				trans.rollback();
-			}
-			else {
-				if (req.body.ingredients.length != undefined) {
-					for(var i = 0; i < req.body.ingredients.length; i++) {
-						var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
-						trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
-							if (err) {
-								success = false;
-								trans.rollback();
-							}
-						});
-					}
+	trans.query("INSERT INTO meal SET ?", postInputs, function(err, info) {
+		if (err) {
+			console.log(err);
+			success = false;
+			trans.rollback();
+		}
+		else {
+			if (req.body.ingredients.length != undefined) {
+				for(var i = 0; i < req.body.ingredients.length; i++) {
+					var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
+					trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
+						if (err) {
+							success = false;
+							trans.rollback();
+						}
+					});
 				}
-				trans.commit();
 			}
-		});
-	} catch (e) {
-		console.log(e);
-	}
+			trans.commit();
+		}
+	});
 
 	trans.execute();
 
