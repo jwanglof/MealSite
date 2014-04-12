@@ -12,6 +12,7 @@
 		"mysql": 							"2.0.*",
 		"encryptionhelper": 	"*",
 		"csv": 					"*",
-		"mysql-queues": 		"*"
+		"mysql-queues": 		"*",
+		"nodemon":				"*"
 	}
 }
