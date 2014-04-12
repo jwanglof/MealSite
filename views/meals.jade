@@ -10,7 +10,8 @@ block content
 		div.col-md-3 Vikt (g)
 
 	each meal in meals
-		div.row.ingredient(id=meal["id"], style="background-color: rgb("+ meal["r"] +", "+ meal["g"] +", "+ meal["b"] +")")
+		//div.row.ingredient(id=meal["id"], style="background-color: rgb("+ meal["r"] +", "+ meal["g"] +", "+ meal["b"] +")")
+		div.row.ingredient(id=meal["id"])
 			div.col-md-3
 				= meal["name"]
 			div.col-md-3

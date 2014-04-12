@@ -4,7 +4,7 @@ exports.dbConfig = function() {
 	var returnValue;
 
 	if (config == "local")
-		returnValue = {host: "localhost", user: "root", password: "geanbe33", database: "mealz"};
+		returnValue = {host: "localhost", user: "root", password: "geanbe33", database: "mealz2"};
 	else if (config == "jumpstarter")
 		returnValue = {host: "127.0.0.1", user: "root", password: "", database: "mealz"};
 

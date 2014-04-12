@@ -117,31 +117,36 @@ exports.meal_add = function(req, res) {
 	var g = Math.floor((Math.random()*255)+1);
 	var b = Math.floor((Math.random()*255)+1);
 
-	var postInputs = {name: req.body.name, description: req.body.description, fk_meal_user: req.cookies.user_id, r: r, g: g, b: b};
+	var postInputs = {name: req.body.name, description: req.body.description, r: r, g: g, b: b, fk_meal_user: req.cookies.user_id};
 	var success = true;
 
 	var trans = connection.startTransaction();
 
-	trans.query("INSERT INTO meal SET ?", postInputs, function(err, info) {
-		if (err) {
-			success = false;
-			trans.rollback();
-		}
-		else {
-			if (req.body.ingredients.length != undefined) {
-				for(var i = 0; i < req.body.ingredients.length; i++) {
-					var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
-					trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
-						if (err) {
-							success = false;
-							trans.rollback();
-						}
-					});
-				}
+	try {
+		trans.query("INSERT INTO meal SET ?", postInputs, function(err, info) {
+			if (err) {
+				console.log(err);
+				success = false;
+				trans.rollback();
 			}
-			trans.commit();
-		}
-	});
+			else {
+				if (req.body.ingredients.length != undefined) {
+					for(var i = 0; i < req.body.ingredients.length; i++) {
+						var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
+						trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
+							if (err) {
+								success = false;
+								trans.rollback();
+							}
+						});
+					}
+				}
+				trans.commit();
+			}
+		});
+	} catch (e) {
+		console.log(e);
+	}
 
 	trans.execute();
 
@@ -185,7 +190,7 @@ exports.meal_show = function(req, res) {
 				var calories 			= ing[0].calories / ingredient_weight;
 				var protein 			= ing[0].protein / ingredient_weight;
 				var fat 				= ing[0].fat / ingredient_weight;
-				var carbohydrates 	= ing[0].carbohydrates / ingredient_weight;
+				var carbohydrates 		= ing[0].carbohydrates / ingredient_weight;
 
 				ingredientsTotal[0] += weight_in_meal;
 				ingredientsTotal[1] += Math.round(calories * weight_in_meal);
@@ -198,7 +203,6 @@ exports.meal_show = function(req, res) {
 
 				// If done, call finished
 				if (ingredients.length == fkIngredients.length) {
-					console.log(ingredients);
 					finished();
 				};
 			});
@@ -206,6 +210,7 @@ exports.meal_show = function(req, res) {
 	};
 
 	var finished = function() {
+		console.log(ingredients);
 		res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
 	};
 };
@@ -252,7 +257,9 @@ exports.meal_get = function(req, res) {
 				ingredientsTotal[3] += fatInMeal;
 				ingredientsTotal[4] += carbohydratesInMeal;
 
-				ingredients.push([ing[0].name, weight_in_meal, caloriesInMeal, proteinInMeal, fatInMeal, carbohydratesInMeal]);
+				var shortenedName = ing[0].name.substr(0, 35);
+
+				ingredients.push([shortenedName, weight_in_meal, caloriesInMeal, proteinInMeal, fatInMeal, carbohydratesInMeal]);
 				counterIngredients += 1;
 
 				// If done, call finished
