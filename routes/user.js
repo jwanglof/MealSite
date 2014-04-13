@@ -31,6 +31,8 @@ exports.meals = function(req, res) {
 				for(var o = 0; o < users.length; o++) {
 					if (rows[i].fk_meal_user == users[o].id)
 						rows[i].fk_meal_user = users[o];
+					if (rows[i].description.length > 35)
+						rows[i].description = rows[i].description.substr(0, 35) +"...";
 				}
 			}
 
@@ -206,7 +208,6 @@ exports.meal_show = function(req, res) {
 	};
 
 	var finished = function() {
-		console.log(ingredients);
 		res.render("meal_show", { cookies: req.cookies, title: 'Visa måltid', meal: meal, ingredients: ingredients, totals: ingredientsTotal });
 	};
 };
@@ -225,10 +226,13 @@ exports.meal_get = function(req, res) {
 		if (err) { console.log(err); return; };
 		
 		fkIngredients = rows;
-		query3();
+		mealQuery();
 	});
 
-	var query3 = function() {
+	var mealQuery = function() {
+		var color_grey = "#c0c0c0";
+		var color_white = "#ffffff";
+
 		for (var i = 0; i < fkIngredients.length; i++) {
 			connection.query("SELECT * FROM ingredient WHERE id=?", fkIngredients[i].ingredientId, function(err, ing) {
 				if (err) { console.log(err); return; };
@@ -236,15 +240,15 @@ exports.meal_get = function(req, res) {
 				var weight_in_meal = fkIngredients[counterIngredients].weight;
 				var ingredient_weight = ing[0].weight;
 
-				var calories 					= ing[0].calories / ingredient_weight;
-				var protein 					= ing[0].protein / ingredient_weight;
+				var calories 				= ing[0].calories / ingredient_weight;
+				var protein 				= ing[0].protein / ingredient_weight;
 				var fat 						= ing[0].fat / ingredient_weight;
-				var carbohydrates 			= ing[0].carbohydrates / ingredient_weight;
+				var carbohydrates 	= ing[0].carbohydrates / ingredient_weight;
 
 				var caloriesInMeal 			= Math.round(calories * weight_in_meal);
 				var proteinInMeal 			= Math.round(protein * weight_in_meal);
-				var fatInMeal 				= Math.round(fat * weight_in_meal);
-				var carbohydratesInMeal 	= Math.round(carbohydrates * weight_in_meal);
+				var fatInMeal 					= Math.round(fat * weight_in_meal);
+				var carbohydratesInMeal = Math.round(carbohydrates * weight_in_meal);
 
 				// Add the weight to show the total weight of each ingredient
 				ingredientsTotal[0] += weight_in_meal;
@@ -253,18 +257,19 @@ exports.meal_get = function(req, res) {
 				ingredientsTotal[3] += fatInMeal;
 				ingredientsTotal[4] += carbohydratesInMeal;
 
-				var shortenedName = ing[0].name.substr(0, 35);
+				var ingredientName = ing[0].name;
+				if (ing[0].name.length > 30)
+					ingredientName = ing[0].name.substr(0, 30) +"...";
 
-				ingredients.push([shortenedName, weight_in_meal, caloriesInMeal, proteinInMeal, fatInMeal, carbohydratesInMeal]);
+				ingredients.push([ingredientName, weight_in_meal, caloriesInMeal, proteinInMeal, fatInMeal, carbohydratesInMeal]);
 				counterIngredients += 1;
 
 				// If done, call finished
 				if (ingredients.length == fkIngredients.length) {
 					var weightRatio = ingredientsTotal[0] / weight;
-					console.log(weight);
 					ingredientsUser[0] = weight;
 					ingredientsUser[1] = Math.round(ingredientsTotal[1] / weightRatio);
-					ingredientsUser[2] = Math.round(ingredientsTotal[2]  / weightRatio);
+					ingredientsUser[2] = Math.round(ingredientsTotal[2] / weightRatio);
 					ingredientsUser[3] = Math.round(ingredientsTotal[3] / weightRatio);
 					ingredientsUser[4] = Math.round(ingredientsTotal[4] / weightRatio);
 					finished();
