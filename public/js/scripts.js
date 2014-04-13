@@ -47,7 +47,7 @@ $(document).ready(function() {
 	$(".expand_meal").on("click", function() {
 		var id = $(this).parent().parent()[0].id;
 		var weight = $(this).parent().parent().find(".weight").val();
-		
+
 		var meal_ingredients = $(this).parent().parent().find(".meal_ingredients");
 		if (meal_ingredients.css("display") == "none") {
 			$(this).text("Göm");
@@ -103,15 +103,19 @@ $(document).ready(function() {
 				content += "<div class='col-md-2'>"+ response["user"][3] +"</div>";
 				content += "<div class='col-md-2'>"+ response["user"][4] +"</div>";
 
-				content += "<div class='col-md-12' style='margin-top: 10px; padding-top: 10px; font-weight: 700; border-top: 1px solid #000;'>Innehållsförteckning</div>";
+				content += "<div class='col-md-12' style='margin-top: 10px; padding-top: 10px; font-weight: 900; border-top: 1px solid #000;'>Innehållsförteckning</div>";
 
 				for (var i = 0; i < response["ingredients"].length; i++) {
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][0] +"</div>";
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][1] +"</div>";
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][2] +"</div>";
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][3] +"</div>";
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][4] +"</div>";
-					content += "<div class='col-md-2'>"+ response["ingredients"][i][5] +"</div>";
+					var color = "#ffffff";
+					if ( i % 2 == 0 )
+						color = "#c0c0c0";
+
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][0] +"</div>";
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][1] +"</div>";
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][2] +"</div>";
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][3] +"</div>";
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][4] +"</div>";
+					content += "<div class='col-md-2' style='background-color: "+ color +"'>"+ response["ingredients"][i][5] +"</div>";
 				}
 				content += "<div style='font-weight: 700;'>";
 					content += "<div class='col-md-2'>Totalt i måltid:</div>";
