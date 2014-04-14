@@ -53,6 +53,7 @@ app.post("/meal/get/:id", user.meal_get);
 app.get("/user/info", user.user_info);
 app.post("/user/info/edit", user.user_info_edit);
 app.get("/user/meals", user.user_meals);
+app.post("/user/meal/private/:id", user.user_meal_private);
 
 app.all("/admin/user/:command", admin.add_user);
 
