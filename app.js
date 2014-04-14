@@ -43,6 +43,7 @@ app.get("/logout", user.logout);
 app.get("/ingredient/form", user.ingredient_form);
 app.post("/ingredient/add", user.ingredient_add);
 app.post("/ingredient/getAll", user.ingredient_getAll);
+app.post("/ingredient/get/:id", user.ingredient_get);
 
 app.get("/meal/form", user.meal_form);
 app.post("/meal/add", user.meal_add);
