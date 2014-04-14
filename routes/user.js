@@ -105,7 +105,7 @@ exports.ingredient_add = function(req, res) {
 };
 
 exports.ingredient_getAll = function(req, res) {
-	connection.query("SELECT id,name,fk_ingredient_ingredientType FROM ingredient", function(err, rows) {
+	connection.query("SELECT id,name,producer,fk_ingredient_ingredientType FROM ingredient", function(err, rows) {
 		if (err) { console.log(err); }
 		
 		res.contentType("json");
@@ -137,7 +137,8 @@ exports.meal_add = function(req, res) {
 		else {
 			if (req.body.ingredients.length != undefined) {
 				for(var i = 0; i < req.body.ingredients.length; i++) {
-					var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: req.body.ingredients[i], weight: req.body.weight[i]};
+					var mealIngredient = {fk_mi_meal: info.insertId, fk_mi_ingredient: parseInt(req.body.ingredients[i]), weight: parseInt(req.body.weight[i])};
+					console.log(mealIngredient);
 					trans.query("INSERT INTO meal_ingredient SET ?", mealIngredient, function(err, dsa) {
 						if (err) {
 							success = false;

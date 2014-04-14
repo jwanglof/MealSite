@@ -19,7 +19,8 @@ $(document).ready(function() {
 
 		var allIngredients;
 		for (var i = 0; i < ingredients.length; i++) {
-			allIngredients += "<option value='"+ ingredients[i].id +"'>"+ ingredients[i].name +"</option>";
+			console.log(ingredients[i]);
+			allIngredients += "<option value='"+ ingredients[i].id +"'>"+ ingredients[i].name +" ("+ ingredients[i].producer +")</option>";
 		}
 
 		$("#ingredients").append(" \
