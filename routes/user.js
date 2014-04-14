@@ -365,6 +365,12 @@ exports.user_info_edit = function(req, res) {
 	res.redirect("/user/info");
 };
 
+exports.user_meals = function(req, res) {
+	connection.query("SELECT * FROM meal WHERE fk_meal_user=?", req.cookies.user_id, function(err, rows) {
+		res.render("user_meals", { cookies: req.cookies, title: "Användarmåltider", meals: rows });
+	});
+}
+
 // connection.end(function(err) {
 // 	console.log("An error occured when the DB connection tried to terminate.");
 // 	console.log("Error: "+ err);

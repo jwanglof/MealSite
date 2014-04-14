@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1 Dina måltider
+
+  div.row.ingredient_title
+    div.col-md-4 Namn
+    div.col-md-8 Beskrivning
+
+  each meal in meals
+    div.row
+      div.col-md-4
+        = meal["name"]
+      div.col-md-8
+        = meal["description"]
