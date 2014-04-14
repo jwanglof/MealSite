@@ -54,3 +54,12 @@ button {margin-right: 10px;}
 	line-height: 20px;
 	display: none;
 }
+
+.glyphicon {
+	margin-right: 18px;
+}
+
+.my_meals:hover {
+	color: #00B7FF;
+	cursor: pointer;
+}

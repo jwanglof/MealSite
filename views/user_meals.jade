@@ -3,13 +3,27 @@ extends layout
 block content
   h1 Dina måltider
 
+  if message
+    h2
+      = message
+
   div.row.ingredient_title
     div.col-md-4 Namn
-    div.col-md-8 Beskrivning
+    div.col-md-6 Beskrivning
+    div.col-md-2 [?] [?] [?]
 
   each meal in meals
-    div.row
+    div.row(id=meal["id"])
       div.col-md-4
         = meal["name"]
-      div.col-md-8
+      div.col-md-6
         = meal["description"]
+      div.col-md-2
+        span.glyphicon.glyphicon-pencil.my_meals.edit
+        
+        if meal["private"] == 1
+          span.glyphicon.glyphicon-off.my_meals.private
+        else
+          span.glyphicon.glyphicon-ban-circle.my_meals.private
+        
+        span.glyphicon.glyphicon-trash.my_meals.remove

@@ -371,6 +371,42 @@ exports.user_meals = function(req, res) {
 	});
 }
 
+exports.user_meal_private = function(req, res) {
+	var mealPrivate;
+	connection.query("SELECT private FROM meal WHERE id=?", req.body.id, function( err, row ) {
+		if ( err ) {
+			console.log(err);
+			return;
+		}
+		
+		mealPrivate = row[0].private;
+
+		updateQuery();
+	});
+
+	var updateQuery = function() {
+		var queryInputs = [(mealPrivate == 0) ? 1 : 0, req.body.id];
+
+		var trans = connection.startTransaction();
+
+		connection.query("UPDATE meal SET private=? WHERE id=?", queryInputs, function( err, info ) {
+			if ( err ) {
+				trans.rollback();
+				res.send(false);
+				return;
+			}
+			else {
+				req.session.messages = "Måltid är nu privat och kommer inte synas för andra användare.";
+				trans.commit();
+			}
+		});
+
+		trans.execute();
+		
+		res.send([ true, queryInputs[0] ]);
+	}
+};
+
 // connection.end(function(err) {
 // 	console.log("An error occured when the DB connection tried to terminate.");
 // 	console.log("Error: "+ err);
