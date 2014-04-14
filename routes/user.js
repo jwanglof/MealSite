@@ -31,8 +31,12 @@ exports.meals = function(req, res) {
 				for(var o = 0; o < users.length; o++) {
 					if (rows[i].fk_meal_user == users[o].id)
 						rows[i].fk_meal_user = users[o];
+					
 					if (rows[i].description.length > 35)
 						rows[i].description = rows[i].description.substr(0, 35) +"...";
+
+					if ( rows[i].name.length > 35 )
+						rows[i].name = rows[i].name.substr(0, 35) +"...";
 				}
 			}
 
@@ -165,6 +169,7 @@ exports.meal_show = function(req, res) {
 		if (err) { console.log(err); return; };
 		
 		meal = row[0];
+
 		query2();
 	});
 
