@@ -6,21 +6,22 @@ block content
 	div.row.ingredient_title
 		div.col-md-2 Namn
 		div.col-md-2 Tillverkare
-		div.col-md-2 Vikt
-		div.col-md-2 Kalorier
+		div.col-md-1 Vikt
+		div.col-md-1 Kalorier
 		div.col-md-1 Protein
 		div.col-md-2 Kolhydrater
 		div.col-md-1 Fett
+		div.col-md-2 Vikt (g)
 
 	each ingredient in ingredients
-		div.row.ingredient
+		div.row.ingredient(id=ingredient["id"])
 			div.col-md-2
 				= ingredient["name"]
 			div.col-md-2
 				= ingredient["producer"]
-			div.col-md-2
+			div.col-md-1
 				= ingredient["weight"] +"g"
-			div.col-md-2
+			div.col-md-1
 				= ingredient["calories"] +"kcal"
 			div.col-md-1
 				= ingredient["protein"] +"g"
@@ -28,3 +29,6 @@ block content
 				= ingredient["carbohydrates"] +"g"
 			div.col-md-1
 				= ingredient["fat"] +"g"
+			div.col-md-2
+				input(type='number', class='ingredientWeight form-control', value="0")
+			div.ingredient_count
