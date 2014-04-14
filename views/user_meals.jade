@@ -10,10 +10,13 @@ block content
   div.row.ingredient_title
     div.col-md-4 Namn
     div.col-md-6 Beskrivning
-    div.col-md-2 [?] [?] [?]
+    div.col-md-2
+      span.question_edit [?]
+      span.question_private [?]
+      span.question_remove [?]
 
   each meal in meals
-    div.row(id=meal["id"])
+    div.row.user_meals(id=meal["id"])
       div.col-md-4
         = meal["name"]
       div.col-md-6
