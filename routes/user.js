@@ -53,6 +53,11 @@ exports.meals = function(req, res) {
 exports.ingredients = function(req, res) {
 	connection.query("SELECT * FROM ingredient", function(err, rows) {
 		if (err) { console.log(err); }
+
+		for ( var i = 0; i < rows.length; i++ ) {
+			if ( rows[i].name.length > 20 )
+				rows[i].name = rows[i].name.substr(0, 20) +"...";
+		}
 		
 		res.render("ingredients", { cookies: req.cookies, title: "Ingredienser", ingredients: rows });
 	});
@@ -112,6 +117,29 @@ exports.ingredient_getAll = function(req, res) {
 		res.write(JSON.stringify({response: rows}));
 		res.end();
 	});
+}
+
+exports.ingredient_get = function(req, res) {
+	var ingredientId = req.body.id;
+	var weight = req.body.weight;
+
+	var ingredientInformation = [];
+
+	connection.query("SELECT * FROM ingredient WHERE id=?", ingredientId, function(err, rows) {
+		if ( err ) { console.log(err); return; }
+		var weightRatio = rows[0].weight / weight;
+		ingredientInformation[0] = weight;
+		ingredientInformation[1] = Math.round(rows[0].calories / weightRatio);
+		ingredientInformation[2] = Math.round(rows[0].protein / weightRatio);
+		ingredientInformation[3] = Math.round(rows[0].fat / weightRatio);
+		ingredientInformation[4] = Math.round(rows[0].carbohydrates / weightRatio);
+		finished();
+	});
+
+	var finished = function() {
+		// res.send({ ingredients: ingredients, totals: ingredientsTotal, user: ingredientsUser });
+		res.send({ totals: ingredientInformation });
+	}
 }
 
 exports.meal_form = function(req, res) {
