@@ -23,7 +23,7 @@ exports.meals = function(req, res) {
 	});
 
 	var query2 = function() {
-		connection.query("SELECT * FROM meal", function(err, rows) {
+		connection.query("SELECT * FROM meal WHERE private=0", function(err, rows) {
 			if (err) { console.log(err); return }
 
 			// Add the user's info to rows instead of only his id
