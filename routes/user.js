@@ -407,6 +407,26 @@ exports.user_meal_private = function(req, res) {
 	}
 };
 
+exports.user_meal_remove = function(req, res) {
+	var status;
+	connection.query("DELETE FROM meal WHERE id=?", req.body.id, function ( err, row ) {
+		if (err) {
+			console.log(err);
+			status = false;
+			finished();
+		}
+
+		if ( row.affectedRows >= 1 ) {
+			status = true;
+			finished();
+		}
+	});
+
+	var finished = function() {
+		res.send(status);
+	}
+};
+
 // connection.end(function(err) {
 // 	console.log("An error occured when the DB connection tried to terminate.");
 // 	console.log("Error: "+ err);

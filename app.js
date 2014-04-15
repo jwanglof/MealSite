@@ -54,6 +54,7 @@ app.get("/user/info", user.user_info);
 app.post("/user/info/edit", user.user_info_edit);
 app.get("/user/meals", user.user_meals);
 app.post("/user/meal/private/:id", user.user_meal_private);
+app.post("/user/meal/remove/:id", user.user_meal_remove);
 
 app.all("/admin/user/:command", admin.add_user);
 

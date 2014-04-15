@@ -2,6 +2,7 @@ $(document).ready(function() {
   $(".my_meals.edit").on("click", function() {
     var id = $(this).closest(".row")[0].id;
   });
+
   $(".my_meals.private").on("click", function() {
     var id = $(this).closest(".row")[0].id;
     var oThis = $(this);
@@ -27,7 +28,23 @@ $(document).ready(function() {
       }
     });
   });
+
   $(".my_meals.remove").on("click", function() {
     var id = $(this).closest(".row")[0].id;
+    var oThis = $(this);
+    
+    request = $.ajax({
+      type: "post",
+      url: "/user/meal/remove/"+ id,
+      data: {id: id}
+    });
+
+    request.done(function(response, textStatus, jqXHR) {
+      if ( response ) {
+        oThis.closest(".row").remove()
+      } else if ( !response ) {
+        alert("Något gick fel. Din måltid är INTE borttagen!");
+      }
+    });
   });
 });
